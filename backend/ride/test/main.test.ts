@@ -1,10 +1,17 @@
-import { getAccount, signup } from "../src/main";
+import axios from "axios";
+
+axios.defaults.validateStatus = () => true;
+
+test("Deve testar p signup pela API", async function () {
+	const response = await axios.post("http://localhost:3000/signup")
+	console.log(response.data)
+});
 
 test.each([
 	"97456321558",
 	"71428793860",
 	"87748248800"
-])("Deve criar uma conta para o passageiro", async function (cpf: string) {
+])("Deve criar uma conta para o passageiro pela API", async function (cpf: string) {
 	// given
 	const inputSignup = {
 		name: "John Doe",
@@ -14,8 +21,10 @@ test.each([
 		password: "123456"
 	};
 	// when
-	const outputSignup = await signup(inputSignup);
-	const outputGetAccount = await getAccount(outputSignup.accountId);
+	const responseSignUp = await axios.post("http://localhost:3000/signup", inputSignup)
+	const outputSignup = responseSignUp.data
+	const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${outputSignup.accountId}`)
+	const outputGetAccount = responseGetAccount.data
 	// then
 	expect(outputSignup.accountId).toBeDefined();
 	expect(outputGetAccount.name).toBe(inputSignup.name);
@@ -32,7 +41,9 @@ test("Não deve criar uma conta se o nome for inválido", async function () {
 		password: "123456"
 	};
 	// when
-	await expect(() => signup(inputSignup)).rejects.toThrow(new Error("Invalid name"));
+	const response = await axios.post("http://localhost:3000/signup", inputSignup)
+	expect(response.status).toBe(422)
+	expect(response.data.message).toBe("Invalid name")
 });
 
 test("Não deve criar uma conta se o email for inválido", async function () {
@@ -45,7 +56,9 @@ test("Não deve criar uma conta se o email for inválido", async function () {
 		password: "123456"
 	};
 	// when
-	await expect(() => signup(inputSignup)).rejects.toThrow(new Error("Invalid email"));
+	const response = await axios.post("http://localhost:3000/signup", inputSignup)
+	expect(response.status).toBe(422)
+	expect(response.data.message).toBe("Invalid email")
 });
 
 test.each([
@@ -65,7 +78,9 @@ test.each([
 		password: "123456"
 	};
 	// when
-	await expect(() => signup(inputSignup)).rejects.toThrow(new Error("Invalid cpf"));
+	const response = await axios.post("http://localhost:3000/signup", inputSignup)
+	expect(response.status).toBe(422)
+	expect(response.data.message).toBe("Invalid cpf")
 });
 
 test("Não deve criar uma conta se o email for duplicado", async function () {
@@ -78,8 +93,10 @@ test("Não deve criar uma conta se o email for duplicado", async function () {
 		password: "123456"
 	};
 	// when
-	await signup(inputSignup);
-	await expect(() => signup(inputSignup)).rejects.toThrow(new Error("Duplicated account"));
+	await axios.post("http://localhost:3000/signup", inputSignup)
+	const response = await axios.post("http://localhost:3000/signup", inputSignup)
+	expect(response.status).toBe(422)
+	expect(response.data.message).toBe("Duplicated account")
 });
 
 test("Deve criar uma conta para o motorista", async function () {
@@ -94,10 +111,10 @@ test("Deve criar uma conta para o motorista", async function () {
 		password: "123456"
 	};
 	// when
-	const outputSignup = await signup(inputSignup);
-	const outputGetAccount = await getAccount(outputSignup.accountId);
+	const { data } = await axios.post("http://localhost:3000/signup", inputSignup)
+	const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${data.accountId}`)
+	const outputGetAccount = responseGetAccount.data
 	// then
-	expect(outputSignup.accountId).toBeDefined();
 	expect(outputGetAccount.name).toBe(inputSignup.name);
 	expect(outputGetAccount.email).toBe(inputSignup.email);
 });
@@ -114,5 +131,7 @@ test("Não deve criar uma conta para o motorista com a placa inválida", async f
 		password: "123456"
 	};
 	// when
-	await expect(() => signup(inputSignup)).rejects.toThrow(new Error("Invalid car plate"));
+	const response = await axios.post("http://localhost:3000/signup", inputSignup)
+	expect(response.status).toBe(422)
+	expect(response.data.message).toBe("Invalid car plate")
 });
