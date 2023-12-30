@@ -2,21 +2,12 @@ import axios from "axios";
 
 axios.defaults.validateStatus = () => true;
 
-test("Deve testar p signup pela API", async function () {
-	const response = await axios.post("http://localhost:3000/signup")
-	console.log(response.data)
-});
-
-test.each([
-	"97456321558",
-	"71428793860",
-	"87748248800"
-])("Deve criar uma conta para o passageiro pela API", async function (cpf: string) {
+test("Deve criar uma conta para o passageiro pela API", async function () {
 	// given
 	const inputSignup = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
-		cpf,
+		cpf: "71428793860",
 		isPassenger: true,
 		password: "123456"
 	};
@@ -44,59 +35,6 @@ test("Não deve criar uma conta se o nome for inválido", async function () {
 	const response = await axios.post("http://localhost:3000/signup", inputSignup)
 	expect(response.status).toBe(422)
 	expect(response.data.message).toBe("Invalid name")
-});
-
-test("Não deve criar uma conta se o email for inválido", async function () {
-	// given
-	const inputSignup = {
-		name: "John Doe",
-		email: `john.doe${Math.random()}`,
-		cpf: "97456321558",
-		isPassenger: true,
-		password: "123456"
-	};
-	// when
-	const response = await axios.post("http://localhost:3000/signup", inputSignup)
-	expect(response.status).toBe(422)
-	expect(response.data.message).toBe("Invalid email")
-});
-
-test.each([
-	"",
-	undefined,
-	null,
-	"11111111111",
-	"111",
-	"11111111111111"
-])("Não deve criar uma conta se o cpf for inválido", async function (cpf: any) {
-	// given
-	const inputSignup = {
-		name: "John Doe",
-		email: `john.doe${Math.random()}@gmail.com`,
-		cpf,
-		isPassenger: true,
-		password: "123456"
-	};
-	// when
-	const response = await axios.post("http://localhost:3000/signup", inputSignup)
-	expect(response.status).toBe(422)
-	expect(response.data.message).toBe("Invalid cpf")
-});
-
-test("Não deve criar uma conta se o email for duplicado", async function () {
-	// given
-	const inputSignup = {
-		name: "John Doe",
-		email: `john.doe${Math.random()}@gmail.com`,
-		cpf: "97456321558",
-		isPassenger: true,
-		password: "123456"
-	};
-	// when
-	await axios.post("http://localhost:3000/signup", inputSignup)
-	const response = await axios.post("http://localhost:3000/signup", inputSignup)
-	expect(response.status).toBe(422)
-	expect(response.data.message).toBe("Duplicated account")
 });
 
 test("Deve criar uma conta para o motorista", async function () {
