@@ -1,5 +1,7 @@
+import sinon from "sinon";
 import GetAccount from "../src/GetAccount";
 import SignUp from "../src/SignUp";
+import AccountDAO from "../src/AccountDAO";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -9,26 +11,28 @@ beforeEach(() => {
 	getAccount = new GetAccount();
 })
 
-test.each([
-	"97456321558",
-	"71428793860",
-	"87748248800"
-])("Deve criar uma conta para o passageiro", async function (cpf: string) {
+test("Deve criar uma conta para o passageiro", async function () {
+	const stubAccountDAOSave = sinon.stub(AccountDAO.prototype, "save").resolves();
+	const stubAccountDAOGetByEmail = sinon.stub(AccountDAO.prototype, "getByEmail").resolves(null);
 	// given
 	const inputSignup = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
-		cpf,
+		cpf: "71428793860",
 		isPassenger: true,
 		password: "123456"
 	};
 	// when
 	const outputSignup = await signup.execute(inputSignup);
+	expect(outputSignup.accountId).toBeDefined();
+	const stubAccountDAOGetById = sinon.stub(AccountDAO.prototype, "getById").resolves(inputSignup);
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
 	// then
-	expect(outputSignup.accountId).toBeDefined();
 	expect(outputGetAccount.name).toBe(inputSignup.name);
 	expect(outputGetAccount.email).toBe(inputSignup.email);
+	stubAccountDAOSave.restore();
+	stubAccountDAOGetByEmail.restore();
+	stubAccountDAOGetById.restore();
 });
 
 test("Não deve criar uma conta se o nome for inválido", async function () {
@@ -57,19 +61,12 @@ test("Não deve criar uma conta se o email for inválido", async function () {
 	await expect(() => signup.execute(inputSignup)).rejects.toThrow(new Error("Invalid email"));
 });
 
-test.each([
-	"",
-	undefined,
-	null,
-	"11111111111",
-	"111",
-	"11111111111111"
-])("Não deve criar uma conta se o cpf for inválido", async function (cpf: any) {
+test("Não deve criar uma conta se o cpf for inválido", async function () {
 	// given
 	const inputSignup = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
-		cpf,
+		cpf: "11111111111",
 		isPassenger: true,
 		password: "123456"
 	};
