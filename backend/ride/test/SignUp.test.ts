@@ -2,6 +2,7 @@ import sinon from "sinon";
 import GetAccount from "../src/GetAccount";
 import SignUp from "../src/SignUp";
 import AccountDAO from "../src/AccountDAO";
+import Logger from "../src/Logger";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -89,6 +90,7 @@ test("Não deve criar uma conta se o email for duplicado", async function () {
 });
 
 test("Deve criar uma conta para o motorista", async function () {
+	const spyLoggerLog = sinon.spy(Logger.prototype, "log")
 	// given
 	const inputSignup = {
 		name: "John Doe",
@@ -106,6 +108,8 @@ test("Deve criar uma conta para o motorista", async function () {
 	expect(outputSignup.accountId).toBeDefined();
 	expect(outputGetAccount.name).toBe(inputSignup.name);
 	expect(outputGetAccount.email).toBe(inputSignup.email);
+	expect(spyLoggerLog.calledOnce).toBeTruthy();
+	expect(spyLoggerLog.calledWith(`Creating account for ${inputSignup.email}`)).toBeTruthy();
 });
 
 test("Não deve criar uma conta para o motorista com a placa inválida", async function () {
