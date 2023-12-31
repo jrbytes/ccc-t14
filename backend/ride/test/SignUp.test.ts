@@ -154,7 +154,7 @@ test("Não deve criar uma conta para o motorista com a placa inválida", async f
 	await expect(() => signup.execute(inputSignup)).rejects.toThrow(new Error("Invalid car plate"));
 });
 
-test.only("Deve criar uma conta para o passageiro com fake", async function () {
+test("Deve criar uma conta para o passageiro com fake", async function () {
 	const inputSignup = {
 		name: "John Doe",
 		email: `john.doe${Math.random()}@gmail.com`,
