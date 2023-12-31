@@ -12,7 +12,7 @@ beforeEach(() => {
 	getAccount = new GetAccount();
 })
 
-test("Deve criar uma conta para o passageiro", async function () {
+test("Deve criar uma conta para o passageiro com stub", async function () {
 	const stubAccountDAOSave = sinon.stub(AccountDAO.prototype, "save").resolves();
 	const stubAccountDAOGetByEmail = sinon.stub(AccountDAO.prototype, "getByEmail").resolves(null);
 	// given
@@ -34,6 +34,27 @@ test("Deve criar uma conta para o passageiro", async function () {
 	stubAccountDAOSave.restore();
 	stubAccountDAOGetByEmail.restore();
 	stubAccountDAOGetById.restore();
+});
+
+test("Deve criar uma conta para o passageiro com mock", async function () {
+	const mockLogger = sinon.mock(Logger.prototype);
+	mockLogger.expects('log').withArgs('signup John Doe').once();
+	// given
+	const inputSignup = {
+		name: "John Doe",
+		email: `john.doe${Math.random()}@gmail.com`,
+		cpf: "71428793860",
+		isPassenger: true,
+		password: "123456"
+	};
+	// when
+	const outputSignup = await signup.execute(inputSignup);
+	expect(outputSignup.accountId).toBeDefined();
+	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
+	// then
+	expect(outputGetAccount.name).toBe(inputSignup.name);
+	expect(outputGetAccount.email).toBe(inputSignup.email);
+	mockLogger.verify();
 });
 
 test("Não deve criar uma conta se o nome for inválido", async function () {
@@ -109,7 +130,7 @@ test("Deve criar uma conta para o motorista", async function () {
 	expect(outputGetAccount.name).toBe(inputSignup.name);
 	expect(outputGetAccount.email).toBe(inputSignup.email);
 	expect(spyLoggerLog.calledOnce).toBeTruthy();
-	expect(spyLoggerLog.calledWith(`Creating account for ${inputSignup.email}`)).toBeTruthy();
+	expect(spyLoggerLog.calledWith(`signup ${inputSignup.name}`)).toBeTruthy();
 });
 
 test("Não deve criar uma conta para o motorista com a placa inválida", async function () {

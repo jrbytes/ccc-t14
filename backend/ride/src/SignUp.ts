@@ -11,7 +11,7 @@ export default class SignUp {
 		this.logger = new Logger();
 	}
 	async execute(input: any) {
-		this.logger.log(`Creating account for ${input.email}`)
+		this.logger.log(`signup ${input.name}`)
 		input.accountId = crypto.randomUUID();
 		const account = await this.accountDAO.getByEmail(input.email);
 		if (account) throw new Error("Duplicated account");
