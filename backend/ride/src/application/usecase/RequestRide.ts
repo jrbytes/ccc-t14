@@ -1,7 +1,7 @@
-import Logger from "./Logger";
-import AccountRepository from "./AccountRepository";
-import Ride from "./Ride";
-import RideRepository from "./RideRepository";
+import Logger from "../logger/Logger";
+import AccountRepository from "../../application/repository/AccountRepository";
+import Ride from "../../domain/Ride";
+import RideRepository from "../../application/repository/RideRepository";
 
 export default class RequestRide {
 	constructor (private rideRepository: RideRepository, private accountRepository: AccountRepository, private logger: Logger) {}

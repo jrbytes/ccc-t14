@@ -4,7 +4,7 @@
   "main": "main.ts",
   "license": "MIT",
   "scripts": {
-    "start": "npx nodemon src/api.ts",
+    "start": "npx nodemon src/main.ts",
     "test": "jest"
   },
   "dependencies": {

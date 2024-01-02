@@ -1,5 +1,5 @@
-import Logger from "./Logger";
-import RideRepository from "./RideRepository";
+import Logger from "../logger/Logger";
+import RideRepository from "../../application/repository/RideRepository";
 
 export default class GetRide {
 	constructor (private rideRepository: RideRepository, private logger: Logger) {}

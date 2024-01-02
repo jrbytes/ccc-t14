@@ -1,13 +1,13 @@
-import GetAccount from "../src/GetAccount";
-import SignUp from "../src/SignUp";
-import LoggerConsole from "../src/LoggerConsole";
-import RequestRide from "../src/RequestRide";
-import GetRide from "../src/GetRide";
-import AcceptRide from "../src/AcceptRide";
-import StartRide from "../src/StartRide";
-import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
-import RideRepositoryDatabase from "../src/RideRepositoryDatabase";
-import PgPromiseAdapter from "../src/PgPromiseAdapter";
+import AcceptRide from "../src/application/usecase/AcceptRide";
+import GetAccount from "../src/application/usecase/GetAccount";
+import GetRide from "../src/application/usecase/GetRide";
+import RequestRide from "../src/application/usecase/RequestRide";
+import SignUp from "../src/application/usecase/SignUp";
+import StartRide from "../src/application/usecase/StartRide";
+import PgPromiseAdapter from "../src/infra/database/PgPromiseAdapter";
+import LoggerConsole from "../src/infra/logger/LoggerConsole";
+import AccountRepositoryDatabase from "../src/infra/repository/AccountRepositoryDatabase";
+import RideRepositoryDatabase from "../src/infra/repository/RideRepositoryDatabase";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -20,7 +20,7 @@ let databaseConnection: PgPromiseAdapter;
 beforeEach(() => {
 	databaseConnection = new PgPromiseAdapter();
 	const accountRepository = new AccountRepositoryDatabase(databaseConnection);
-	const rideRepository = new RideRepositoryDatabase();
+	const rideRepository = new RideRepositoryDatabase(databaseConnection);
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
 	getAccount = new GetAccount(accountRepository);

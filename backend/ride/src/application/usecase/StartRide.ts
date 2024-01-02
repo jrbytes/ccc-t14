@@ -1,4 +1,4 @@
-import RideRepository from "./RideRepository";
+import RideRepository from "../../application/repository/RideRepository";
 
 export default class StartRide {
 	constructor (private rideRepository: RideRepository) {}

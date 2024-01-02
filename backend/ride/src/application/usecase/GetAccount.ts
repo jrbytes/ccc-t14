@@ -1,4 +1,4 @@
-import AccountRepository from "./AccountRepository";
+import AccountRepository from "../../application/repository/AccountRepository";
 
 export default class GetAccount {
 	constructor (private accountRepository: AccountRepository) {}

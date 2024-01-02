@@ -1,6 +1,6 @@
-import Account from "./Account";
-import AccountRepository from "./AccountRepository";
-import DatabaseConnection from "./DatabaseConnection";
+import Account from "../../domain/Account";
+import AccountRepository from "../../application/repository/AccountRepository";
+import DatabaseConnection from "../../infra/database/DatabaseConnection";
 
 export default class AccountRepositoryDatabase implements AccountRepository {
   constructor(readonly connection: DatabaseConnection) {}
