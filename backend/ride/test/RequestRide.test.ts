@@ -3,8 +3,8 @@ import SignUp from "../src/SignUp";
 import LoggerConsole from "../src/LoggerConsole";
 import RequestRide from "../src/RequestRide";
 import GetRide from "../src/GetRide";
-import RideDAODatabase from "../src/RideDAODatabase";
 import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
+import RideRepositoryDatabase from "../src/RideRepositoryDatabase";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -13,12 +13,12 @@ let getRide: GetRide;
 
 beforeEach(() => {
 	const accountRepository = new AccountRepositoryDatabase();
-	const rideDao = new RideDAODatabase();
+	const rideRepoDd = new RideRepositoryDatabase();
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
 	getAccount = new GetAccount(accountRepository);
-	requestRide = new RequestRide(rideDao, accountRepository, logger);
-	getRide = new GetRide(rideDao, logger);
+	requestRide = new RequestRide(rideRepoDd, accountRepository, logger);
+	getRide = new GetRide(rideRepoDd, logger);
 })
 
 test("Deve solicitar uma corrida", async function () {

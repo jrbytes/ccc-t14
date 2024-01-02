@@ -3,10 +3,10 @@ import SignUp from "../src/SignUp";
 import LoggerConsole from "../src/LoggerConsole";
 import RequestRide from "../src/RequestRide";
 import GetRide from "../src/GetRide";
-import RideDAODatabase from "../src/RideDAODatabase";
 import AcceptRide from "../src/AcceptRide";
 import StartRide from "../src/StartRide";
 import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
+import RideRepositoryDatabase from "../src/RideRepositoryDatabase";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -17,14 +17,14 @@ let startRide: StartRide;
 
 beforeEach(() => {
 	const accountRepository = new AccountRepositoryDatabase();
-	const rideDao = new RideDAODatabase();
+	const rideRepository = new RideRepositoryDatabase();
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
 	getAccount = new GetAccount(accountRepository);
-	requestRide = new RequestRide(rideDao, accountRepository, logger);
-	getRide = new GetRide(rideDao, logger);
-  acceptRide = new AcceptRide(rideDao, accountRepository);
-	startRide = new StartRide(rideDao);
+	requestRide = new RequestRide(rideRepository, accountRepository, logger);
+	getRide = new GetRide(rideRepository, logger);
+  acceptRide = new AcceptRide(rideRepository, accountRepository);
+	startRide = new StartRide(rideRepository);
 })
 
 test("Deve iniciar uma corrida", async function () {

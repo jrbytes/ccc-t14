@@ -3,9 +3,9 @@ import SignUp from "../src/SignUp";
 import LoggerConsole from "../src/LoggerConsole";
 import RequestRide from "../src/RequestRide";
 import GetRide from "../src/GetRide";
-import RideDAODatabase from "../src/RideDAODatabase";
 import AcceptRide from "../src/AcceptRide";
 import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
+import RideRepositoryDatabase from "../src/RideRepositoryDatabase";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -15,13 +15,13 @@ let acceptRide: AcceptRide;
 
 beforeEach(() => {
 	const accountRepository = new AccountRepositoryDatabase();
-	const rideDao = new RideDAODatabase();
+	const rideRepository = new RideRepositoryDatabase();
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
 	getAccount = new GetAccount(accountRepository);
-	requestRide = new RequestRide(rideDao, accountRepository, logger);
-	getRide = new GetRide(rideDao, logger);
-  acceptRide = new AcceptRide(rideDao, accountRepository);
+	requestRide = new RequestRide(rideRepository, accountRepository, logger);
+	getRide = new GetRide(rideRepository, logger);
+  acceptRide = new AcceptRide(rideRepository, accountRepository);
 })
 
 test("Deve aceitar uma corrida", async function () {
@@ -57,7 +57,7 @@ test("Deve aceitar uma corrida", async function () {
   await acceptRide.execute(inputAcceptRide);
 	const outputGetRide = await getRide.execute(outputRequestRide.rideId);
 	expect(outputGetRide.status).toBe("accepted");
-  expect(outputGetRide.driver_id).toBe(outputSignupDriver.accountId);
+  expect(outputGetRide.driverId).toBe(outputSignupDriver.accountId);
 });
 
 test("Não pode aceitar uma corrida se a conta for de um motorista", async function () {
