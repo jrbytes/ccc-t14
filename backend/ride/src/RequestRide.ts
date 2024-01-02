@@ -1,17 +1,17 @@
 import crypto from "crypto";
 import Logger from "./Logger";
 import RideDAO from "./RideDAO";
-import AccountDAO from "./AccountDAO";
+import AccountRepository from "./AccountRepository";
 
 export default class RequestRide {
-	constructor (private rideDAO: RideDAO, private accountDAO: AccountDAO, private logger: Logger) {}
+	constructor (private rideDAO: RideDAO, private accountRepository: AccountRepository, private logger: Logger) {}
 	async execute(input: any) {
 		this.logger.log(`requestRide`)
-		const account = await this.accountDAO.getById(input.passengerId);
+		const account = await this.accountRepository.getById(input.passengerId);
 		if (!account) {
 			throw new Error("Account does not exist");
 		}
-		if (!account.is_passenger) {
+		if (!account.isPassenger) {
 			throw new Error("Only passengers can request a ride");
 		}
 		const activeRide = await this.rideDAO.getActiveRideByPassengerId(input.passengerId);

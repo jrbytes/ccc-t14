@@ -1,5 +1,4 @@
 import RideDAO from "./RideDAO";
-import AccountDAO from "./AccountDAO";
 
 export default class StartRide {
 	constructor (private rideDAO: RideDAO) {}

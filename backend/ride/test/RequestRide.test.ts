@@ -1,10 +1,10 @@
 import GetAccount from "../src/GetAccount";
 import SignUp from "../src/SignUp";
-import AccountDAODatabase from "../src/AccountDAODatabase";
 import LoggerConsole from "../src/LoggerConsole";
 import RequestRide from "../src/RequestRide";
 import GetRide from "../src/GetRide";
 import RideDAODatabase from "../src/RideDAODatabase";
+import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -12,12 +12,12 @@ let requestRide: RequestRide;
 let getRide: GetRide;
 
 beforeEach(() => {
-	const accountDAO = new AccountDAODatabase();
+	const accountRepository = new AccountRepositoryDatabase();
 	const rideDao = new RideDAODatabase();
 	const logger = new LoggerConsole();
-	signup = new SignUp(accountDAO, logger);
-	getAccount = new GetAccount(accountDAO);
-	requestRide = new RequestRide(rideDao, accountDAO, logger);
+	signup = new SignUp(accountRepository, logger);
+	getAccount = new GetAccount(accountRepository);
+	requestRide = new RequestRide(rideDao, accountRepository, logger);
 	getRide = new GetRide(rideDao, logger);
 })
 
