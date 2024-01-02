@@ -5,14 +5,17 @@ import RequestRide from "../src/RequestRide";
 import GetRide from "../src/GetRide";
 import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
 import RideRepositoryDatabase from "../src/RideRepositoryDatabase";
+import PgPromiseAdapter from "../src/PgPromiseAdapter";
 
 let signup: SignUp;
 let getAccount: GetAccount;
 let requestRide: RequestRide;
 let getRide: GetRide;
+let databaseConnection: PgPromiseAdapter;
 
 beforeEach(() => {
-	const accountRepository = new AccountRepositoryDatabase();
+	databaseConnection = new PgPromiseAdapter();
+	const accountRepository = new AccountRepositoryDatabase(databaseConnection);
 	const rideRepoDd = new RideRepositoryDatabase();
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
@@ -94,3 +97,7 @@ test("Não deve solicitar uma corrida se o passageiro já estiver outra corrida 
 	await requestRide.execute(inputRequestRide);
 	await expect(() => requestRide.execute(inputRequestRide)).rejects.toThrow(new Error("Passenger has an active ride"));
 });
+
+afterEach(async () => {
+	await databaseConnection.close();
+})

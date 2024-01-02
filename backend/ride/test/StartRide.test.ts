@@ -7,6 +7,7 @@ import AcceptRide from "../src/AcceptRide";
 import StartRide from "../src/StartRide";
 import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
 import RideRepositoryDatabase from "../src/RideRepositoryDatabase";
+import PgPromiseAdapter from "../src/PgPromiseAdapter";
 
 let signup: SignUp;
 let getAccount: GetAccount;
@@ -14,9 +15,11 @@ let requestRide: RequestRide;
 let getRide: GetRide;
 let acceptRide: AcceptRide;
 let startRide: StartRide;
+let databaseConnection: PgPromiseAdapter;
 
 beforeEach(() => {
-	const accountRepository = new AccountRepositoryDatabase();
+	databaseConnection = new PgPromiseAdapter();
+	const accountRepository = new AccountRepositoryDatabase(databaseConnection);
 	const rideRepository = new RideRepositoryDatabase();
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
@@ -65,3 +68,7 @@ test("Deve iniciar uma corrida", async function () {
 	const outputGetRide = await getRide.execute(outputRequestRide.rideId);
 	expect(outputGetRide.status).toBe("in_progress");
 });
+
+afterEach(async () => {
+	await databaseConnection.close();
+})

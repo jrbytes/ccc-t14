@@ -6,12 +6,15 @@ import Logger from "../src/Logger";
 import AccountRepositoryDatabase from "../src/AccountRepositoryDatabase";
 import AccountRepository from "../src/AccountRepository";
 import Account from "../src/Account";
+import PgPromiseAdapter from "../src/PgPromiseAdapter";
 
 let signup: SignUp;
 let getAccount: GetAccount;
+let databaseConnection: PgPromiseAdapter;
 
 beforeEach(() => {
-	const accountRepository = new AccountRepositoryDatabase();
+	databaseConnection = new PgPromiseAdapter();
+	const accountRepository = new AccountRepositoryDatabase(databaseConnection);
 	const logger = new LoggerConsole();
 	signup = new SignUp(accountRepository, logger);
 	getAccount = new GetAccount(accountRepository);
@@ -28,8 +31,8 @@ test("Deve criar uma conta para o passageiro", async function () {
 	const outputSignup = await signup.execute(inputSignup);
 	expect(outputSignup.accountId).toBeDefined();
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
-	expect(outputGetAccount.name).toBe(inputSignup.name);
-	expect(outputGetAccount.email).toBe(inputSignup.email);
+	expect(outputGetAccount?.name).toBe(inputSignup.name);
+	expect(outputGetAccount?.email).toBe(inputSignup.email);
 });
 
 test("Deve criar uma conta para o passageiro com stub", async function () {
@@ -46,8 +49,8 @@ test("Deve criar uma conta para o passageiro com stub", async function () {
 	expect(outputSignup.accountId).toBeDefined();
 	const stubAccountDAOGetById = sinon.stub(AccountRepositoryDatabase.prototype, "getById").resolves(Account.create(inputSignup.name, inputSignup.email, inputSignup.cpf, "", inputSignup.isPassenger, false));
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
-	expect(outputGetAccount.name).toBe(inputSignup.name);
-	expect(outputGetAccount.email).toBe(inputSignup.email);
+	expect(outputGetAccount?.name).toBe(inputSignup.name);
+	expect(outputGetAccount?.email).toBe(inputSignup.email);
 	stubAccountDAOSave.restore();
 	stubAccountDAOGetByEmail.restore();
 	stubAccountDAOGetById.restore();
@@ -66,8 +69,8 @@ test("Deve criar uma conta para o passageiro com mock", async function () {
 	const outputSignup = await signup.execute(inputSignup);
 	expect(outputSignup.accountId).toBeDefined();
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
-	expect(outputGetAccount.name).toBe(inputSignup.name);
-	expect(outputGetAccount.email).toBe(inputSignup.email);
+	expect(outputGetAccount?.name).toBe(inputSignup.name);
+	expect(outputGetAccount?.email).toBe(inputSignup.email);
 	mockLogger.verify();
 	mockLogger.restore();
 });
@@ -132,8 +135,8 @@ test("Deve criar uma conta para o motorista", async function () {
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
 	// then
 	expect(outputSignup.accountId).toBeDefined();
-	expect(outputGetAccount.name).toBe(inputSignup.name);
-	expect(outputGetAccount.email).toBe(inputSignup.email);
+	expect(outputGetAccount?.name).toBe(inputSignup.name);
+	expect(outputGetAccount?.email).toBe(inputSignup.email);
 	expect(spyLoggerLog.calledOnce).toBeTruthy();
 	expect(spyLoggerLog.calledWith(`signup ${inputSignup.name}`)).toBeTruthy();
 	spyLoggerLog.restore();
@@ -180,6 +183,10 @@ test("Deve criar uma conta para o passageiro com fake", async function () {
 	const outputSignup = await signup.execute(inputSignup);
 	expect(outputSignup.accountId).toBeDefined();
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
-	expect(outputGetAccount.name).toBe(inputSignup.name);
-	expect(outputGetAccount.email).toBe(inputSignup.email);
+	expect(outputGetAccount?.name).toBe(inputSignup.name);
+	expect(outputGetAccount?.email).toBe(inputSignup.email);
 });
+
+afterEach(async () => {
+	await databaseConnection.close();
+})
