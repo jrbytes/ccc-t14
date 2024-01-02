@@ -1,8 +1,7 @@
-import GetAccountAccountDAO from "./GetAccountAccountDAO"
-import SignUpAccountDAO from "./SignUpAccountDAO"
+import Account from "./Account"
 
-export default interface AccountDAO extends SignUpAccountDAO, GetAccountAccountDAO {
-  save(account: any): Promise<void> 
-  getById(accountId: string): Promise<any> 
-  getByEmail(accountId: string): Promise<any>
+export default interface AccountRepository {
+  save(account: Account): Promise<void> 
+  getById(accountId: string): Promise<Account> 
+  getByEmail(accountId: string): Promise<Account>
 }
