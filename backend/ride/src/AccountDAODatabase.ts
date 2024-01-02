@@ -10,7 +10,7 @@ export default class AccountDAODatabase implements AccountDAO, SignUpAccountDAO,
     await connection.$pool.end();
   }
 
-  async getById(accountId: string, flag: boolean) {
+  async getById(accountId: string) {
     const connection = pgp()("postgres://postgres:docker@localhost:5432/app");
     const [account] = await connection.query("select * from cccat14.account where account_id = $1", [accountId]);
     await connection.$pool.end();
