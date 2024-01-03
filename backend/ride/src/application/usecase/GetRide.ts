@@ -12,8 +12,8 @@ export default class GetRide {
 		let distance = 0;
 		for (const [index, position] of positions.entries()) {
 			if (!positions[index + 1]) break;
-			const from = { lat: position.lat, long: position.long };
-			const to = { lat: positions[index + 1].lat, long: positions[index + 1].long };
+			const from = { lat: position.coordinate.lat, long: position.coordinate.long };
+			const to = { lat: positions[index + 1].coordinate.lat, long: positions[index + 1].coordinate.long };
 			const earthRadius = 6371;
 			const degreesToRadians = Math.PI / 180;
 			const deltaLat = (to.lat - from.lat) * degreesToRadians;
