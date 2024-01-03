@@ -1,5 +1,6 @@
 import Coordinate from "./Coordinate";
 import DistanceCalculator from "./DistanceCalculator";
+import { FareCalculatorFactory } from "./FareCalculator";
 import Position from "./Position";
 import RideStatus, { RideStatusFactory } from "./RideStatus";
 
@@ -28,7 +29,8 @@ export default class Ride {
   }
 
   finish() {
-    this.fare = this.distance * 2.1;
+    const fareCalculator = FareCalculatorFactory.create(this.date);
+    this.fare = fareCalculator.calculate(this.distance);
     this.status.finish();
   }
 
