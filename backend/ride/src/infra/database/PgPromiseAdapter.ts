@@ -1,18 +1,18 @@
-import pgp from "pg-promise";
-import DatabaseConnection from "./DatabaseConnection";
+import pgp from 'pg-promise'
+import type DatabaseConnection from './DatabaseConnection'
 
 export default class PgPromiseAdapter implements DatabaseConnection {
-  connection: any;
+  connection: any
 
   constructor() {
-    this.connection = pgp()("postgres://postgres:docker@localhost:5432/app");
+    this.connection = pgp()('postgres://postgres:docker@localhost:5432/app')
   }
 
-  query(statement: string, params: any): Promise<any> {
-    return this.connection.query(statement, params);
+  async query(statement: string, params: any): Promise<any> {
+    return this.connection.query(statement, params)
   }
 
   async close(): Promise<void> {
-    await this.connection.$pool.end();
+    await this.connection.$pool.end()
   }
 }

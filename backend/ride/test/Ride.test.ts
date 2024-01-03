@@ -1,5 +1,5 @@
-import Position from "../src/domain/Position"
-import Ride from "../src/domain/Ride"
+import Position from '../src/domain/Position'
+import Ride from '../src/domain/Ride'
 
 test('Deve testar uma ride', () => {
   const ride = Ride.create('', 0, 0, 0, 0)

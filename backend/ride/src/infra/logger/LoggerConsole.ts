@@ -1,7 +1,7 @@
-import Logger from "../../application/logger/Logger";
+import type Logger from '../../application/logger/Logger'
 
 export default class LoggerConsole implements Logger {
-  log (message: string) {
-    console.log(message);
+  log(message: string): void {
+    console.log(message)
   }
 }
