@@ -9,20 +9,12 @@ export default class GetRide {
 		this.logger.log(`getRide`)
 		const ride = await this.rideRepository.getById(rideId);
 		if (!ride) throw new Error("Ride not found");
-		const positions = await this.positionRepository.listByRideId(rideId);
-		let distance = 0;
-		for (const [index, position] of positions.entries()) {
-			if (!positions[index + 1]) break;
-			const from = { lat: position.coordinate.lat, long: position.coordinate.long };
-			const to = { lat: positions[index + 1].coordinate.lat, long: positions[index + 1].coordinate.long };
-			distance += DistanceCalculator.calculate(from, to)
-		}
     return {
 			rideId: ride.rideId,
 			status: ride.getStatus(),
 			driverId: ride.getDriverId(),
 			passengerId: ride.passengerId,
-			distance,
+			distance: ride.getDistance(),
 			fare: ride.getFare()
 		};
 	}

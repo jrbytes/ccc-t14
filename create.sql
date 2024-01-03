@@ -23,6 +23,8 @@ create table cccat14.ride (
 	from_long numeric,
 	to_lat numeric,
 	to_long numeric,
+	last_lat numeric,
+	last_long numeric,
 	date timestamp
 );
 

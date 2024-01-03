@@ -10,6 +10,8 @@ export default class UpdatePosition {
 		if (ride.getStatus() !== "in_progress") throw new Error("To update position ride must be in progress")
 		const position = Position.create(input.rideId, input.lat, input.long)
 		await this.positionRepository.save(position)
+		ride.updatePosition(position)
+		await this.rideRepository.update(ride);
 	}
 }
 

@@ -1,9 +1,12 @@
+import Coordinate from "./Coordinate";
+import DistanceCalculator from "./DistanceCalculator";
+import Position from "./Position";
 import RideStatus, { RideStatusFactory } from "./RideStatus";
 
 export default class Ride {
   status: RideStatus;
 
-  constructor(readonly rideId: string, readonly passengerId: string, private driverId: string, status: string, readonly date: Date, readonly fromLat: number, readonly fromLong: number, readonly toLat: number, readonly toLong: number, private fare: number = 0, private distance: number = 0) {
+  constructor(readonly rideId: string, readonly passengerId: string, private driverId: string, status: string, readonly date: Date, readonly fromLat: number, readonly fromLong: number, readonly toLat: number, readonly toLong: number, private fare: number = 0, private distance: number = 0, private lastPosition?: Coordinate) {
     this.status = RideStatusFactory.create(status, this);
   }
 
@@ -24,10 +27,16 @@ export default class Ride {
     this.status.start();
   }
 
-  finish(distance: number) {
-    this.fare = distance * 2.1;
-    this.distance = distance;
+  finish() {
+    this.fare = this.distance * 2.1;
     this.status.finish();
+  }
+
+  updatePosition(position: Position) {
+    if (this.lastPosition) {
+      this.distance += DistanceCalculator.calculate(this.lastPosition, position.coordinate);
+    }
+    this.lastPosition = position.coordinate;
   }
 
   getStatus() {
@@ -44,5 +53,9 @@ export default class Ride {
 
   getDistance() {
     return this.distance;
+  }
+
+  getLastPosition() {
+    return this.lastPosition;
   }
 }
