@@ -10,9 +10,14 @@ test('Deve criar uma conta para o passageiro pela API', async function () {
     isPassenger: true,
     password: '123456',
   }
-  const responseSignUp = await axios.post('http://localhost:3000/signup', inputSignup)
+  const responseSignUp = await axios.post(
+    'http://localhost:3000/signup',
+    inputSignup,
+  )
   const outputSignup = responseSignUp.data
-  const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${outputSignup.accountId}`)
+  const responseGetAccount = await axios.get(
+    `http://localhost:3000/accounts/${outputSignup.accountId}`,
+  )
   const outputGetAccount = responseGetAccount.data
   expect(outputSignup.accountId).toBeDefined()
   expect(outputGetAccount.name).toBe(inputSignup.name)
@@ -43,7 +48,9 @@ test('Deve criar uma conta para o motorista', async function () {
     password: '123456',
   }
   const { data } = await axios.post('http://localhost:3000/signup', inputSignup)
-  const responseGetAccount = await axios.get(`http://localhost:3000/accounts/${data.accountId}`)
+  const responseGetAccount = await axios.get(
+    `http://localhost:3000/accounts/${data.accountId}`,
+  )
   const outputGetAccount = responseGetAccount.data
   expect(outputGetAccount.name).toBe(inputSignup.name)
   expect(outputGetAccount.email).toBe(inputSignup.email)

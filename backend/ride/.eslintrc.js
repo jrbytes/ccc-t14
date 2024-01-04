@@ -27,5 +27,6 @@ module.exports = {
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "no-new": "off",
   }
 }
