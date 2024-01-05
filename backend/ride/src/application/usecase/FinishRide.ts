@@ -1,10 +1,10 @@
 import type RideRepository from '../../application/repository/RideRepository'
-import type PositionRepository from '../repository/PositionRepository'
+import type Mediator from '../../infra/mediator/Mediator'
 
 export default class FinishRide {
   constructor(
     private readonly rideRepository: RideRepository,
-    private readonly positionRepository: PositionRepository,
+    private readonly mediator: Mediator,
   ) {}
 
   async execute(input: Input): Promise<void> {
@@ -15,6 +15,11 @@ export default class FinishRide {
     }
     ride.finish()
     await this.rideRepository.update(ride)
+    // await this.sendReceipt.execute({ rideId: ride.rideId })
+    await this.mediator.publish('rideCompleted', {
+      rideId: ride.rideId,
+      amount: ride.getFare(),
+    })
   }
 }
 

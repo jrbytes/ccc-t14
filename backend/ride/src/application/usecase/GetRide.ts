@@ -1,5 +1,5 @@
-import type Logger from '../logger/Logger'
 import type RideRepository from '../../application/repository/RideRepository'
+import type Logger from '../logger/Logger'
 
 export default class GetRide {
   constructor(
