@@ -28,10 +28,14 @@ export default class MainController {
       'get',
       '/accounts/:accountId',
       async (params: any, body: any) => {
-        const output = await this.getAccount?.execute(
-          params.accountId as string,
-        )
-        return output
+        try {
+          const output = await this.getAccount?.execute(
+            params.accountId as string,
+          )
+          return output
+        } catch (error) {
+          return undefined
+        }
       },
     )
   }

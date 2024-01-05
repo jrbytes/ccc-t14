@@ -18,7 +18,9 @@ export class OvernightFareCalculator implements FareCalculator {
 
 export class FareCalculatorFactory {
   static create(date: Date): FareCalculator {
-    if (date.getHours() >= 8 && date.getHours() <= 22) return new NormalFareCalculator()
+    if (date.getHours() >= 8 && date.getHours() <= 22) {
+      return new NormalFareCalculator()
+    }
     return new OvernightFareCalculator()
   }
 }

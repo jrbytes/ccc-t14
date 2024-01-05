@@ -1,5 +1,6 @@
-import type HttpServer from './HttpServer'
 import express from 'express'
+
+import type HttpServer from './HttpServer'
 
 export default class ExpressAdapter implements HttpServer {
   app: any
@@ -10,14 +11,17 @@ export default class ExpressAdapter implements HttpServer {
   }
 
   register(method: string, url: string, callback: any): void {
-    this.app[method](url, async function (req: express.Request, res: express.Response) {
-      try {
-        const output = await callback(req.params, req.body)
-        res.json(output)
-      } catch (error: any) {
-        res.status(422).json({ message: error.message })
-      }
-    })
+    this.app[method](
+      url,
+      async function (req: express.Request, res: express.Response) {
+        try {
+          const output = await callback(req.params, req.body)
+          res.json(output)
+        } catch (error: any) {
+          res.status(422).json({ message: error.message })
+        }
+      },
+    )
   }
 
   listen(port: number): void {

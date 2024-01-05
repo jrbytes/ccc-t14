@@ -1,7 +1,7 @@
 import type RideRepository from '../../application/repository/RideRepository'
+import Coordinate from '../../domain/Coordinate'
 import Ride from '../../domain/Ride'
 import type DatabaseConnection from '../database/DatabaseConnection'
-import Coordinate from '../../domain/Coordinate'
 
 export default class RideRepositoryDatabase implements RideRepository {
   constructor(readonly connection: DatabaseConnection) {}
@@ -40,11 +40,17 @@ export default class RideRepositoryDatabase implements RideRepository {
   }
 
   async getById(rideId: string): Promise<Ride | undefined> {
-    const [ride] = await this.connection.query('select * from cccat14.ride where ride_id = $1', [rideId])
+    const [ride] = await this.connection.query(
+      'select * from cccat14.ride where ride_id = $1',
+      [rideId],
+    )
     if (!ride) return undefined
     let lastPosition: Coordinate | undefined
     if (ride.last_lat && ride.last_long) {
-      lastPosition = new Coordinate(Number(ride.last_lat), Number(ride.last_long))
+      lastPosition = new Coordinate(
+        Number(ride.last_lat),
+        Number(ride.last_long),
+      )
     }
     return new Ride(
       String(ride.ride_id),
@@ -63,7 +69,10 @@ export default class RideRepositoryDatabase implements RideRepository {
   }
 
   async list(): Promise<Ride[]> {
-    const ridesData = await this.connection.query('select * from cccat14.ride', [])
+    const ridesData = await this.connection.query(
+      'select * from cccat14.ride',
+      [],
+    )
     const rides: Ride[] = []
     for (const ride of ridesData) {
       rides.push(
@@ -83,7 +92,9 @@ export default class RideRepositoryDatabase implements RideRepository {
     return rides
   }
 
-  async getActiveRideByPassengerId(passengerId: string): Promise<Ride | undefined> {
+  async getActiveRideByPassengerId(
+    passengerId: string,
+  ): Promise<Ride | undefined> {
     const [ride] = await this.connection.query(
       "select * from cccat14.ride where passenger_id = $1 and status in ('requested', 'accepted', 'in_progress')",
       [passengerId],

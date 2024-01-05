@@ -1,4 +1,5 @@
 import pgp from 'pg-promise'
+
 import type DatabaseConnection from './DatabaseConnection'
 
 export default class PgPromiseAdapter implements DatabaseConnection {

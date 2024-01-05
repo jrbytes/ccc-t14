@@ -1,23 +1,21 @@
 import GetRide from '../src/application/usecase/GetRide'
 import RequestRide from '../src/application/usecase/RequestRide'
-import SignUp from '../src/application/usecase/SignUp'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
+import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
-import AccountRepositoryDatabase from '../src/infra/repository/AccountRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
-let signup: SignUp
 let requestRide: RequestRide
 let getRide: GetRide
 let databaseConnection: PgPromiseAdapter
+let accountGateway: AccountGatewayHttp
 
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter()
-  const accountRepository = new AccountRepositoryDatabase(databaseConnection)
   const rideRepoDd = new RideRepositoryDatabase(databaseConnection)
   const logger = new LoggerConsole()
-  signup = new SignUp(accountRepository, logger)
-  requestRide = new RequestRide(rideRepoDd, accountRepository, logger)
+  accountGateway = new AccountGatewayHttp()
+  requestRide = new RequestRide(rideRepoDd, accountGateway, logger)
   getRide = new GetRide(rideRepoDd, logger)
 })
 
@@ -29,7 +27,7 @@ test('Deve solicitar uma corrida', async function () {
     isPassenger: true,
     password: '123456',
   }
-  const outputSignup = await signup.execute(inputSignup)
+  const outputSignup = await accountGateway.signup(inputSignup)
   const inputRequestRide = {
     passengerId: outputSignup.accountId,
     fromLat: -23.566236,
@@ -51,9 +49,9 @@ test('Não deve solicitar uma corrida se a conta não existir', async function (
     toLat: -23.566236,
     toLong: -46.650985,
   }
-  await expect(async () => await requestRide.execute(inputRequestRide)).rejects.toThrow(
-    new Error('Account does not exist'),
-  )
+  await expect(
+    async () => await requestRide.execute(inputRequestRide),
+  ).rejects.toThrow(new Error('Account does not exist'))
 })
 
 test('Não deve solicitar uma corrida se a conta não for de um passageiro', async function () {
@@ -66,7 +64,7 @@ test('Não deve solicitar uma corrida se a conta não for de um passageiro', asy
     isDriver: true,
     password: '123456',
   }
-  const outputSignup = await signup.execute(inputSignup)
+  const outputSignup = await accountGateway.signup(inputSignup)
   const inputRequestRide = {
     passengerId: outputSignup.accountId,
     fromLat: -23.566236,
@@ -74,9 +72,9 @@ test('Não deve solicitar uma corrida se a conta não for de um passageiro', asy
     toLat: -23.566236,
     toLong: -46.650985,
   }
-  await expect(async () => await requestRide.execute(inputRequestRide)).rejects.toThrow(
-    new Error('Only passengers can request a ride'),
-  )
+  await expect(
+    async () => await requestRide.execute(inputRequestRide),
+  ).rejects.toThrow(new Error('Only passengers can request a ride'))
 })
 
 test('Não deve solicitar uma corrida se o passageiro já estiver outra corrida ativa', async function () {
@@ -87,7 +85,7 @@ test('Não deve solicitar uma corrida se o passageiro já estiver outra corrida 
     isPassenger: true,
     password: '123456',
   }
-  const outputSignup = await signup.execute(inputSignup)
+  const outputSignup = await accountGateway.signup(inputSignup)
   const inputRequestRide = {
     passengerId: outputSignup.accountId,
     fromLat: -23.566236,
@@ -96,9 +94,9 @@ test('Não deve solicitar uma corrida se o passageiro já estiver outra corrida 
     toLong: -46.650985,
   }
   await requestRide.execute(inputRequestRide)
-  await expect(async () => await requestRide.execute(inputRequestRide)).rejects.toThrow(
-    new Error('Passenger has an active ride'),
-  )
+  await expect(
+    async () => await requestRide.execute(inputRequestRide),
+  ).rejects.toThrow(new Error('Passenger has an active ride'))
 })
 
 afterEach(async () => {

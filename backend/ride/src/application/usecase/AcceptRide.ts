@@ -1,14 +1,14 @@
-import type AccountRepository from '../../application/repository/AccountRepository'
 import type RideRepository from '../../application/repository/RideRepository'
+import type AccountGateway from '../gateway/AccountGateway'
 
 export default class AcceptRide {
   constructor(
     private readonly rideRepository: RideRepository,
-    private readonly accountRepository: AccountRepository,
+    private readonly accountGateway: AccountGateway,
   ) {}
 
   async execute(input: any): Promise<void> {
-    const account = await this.accountRepository.getById(input.driverId as string)
+    const account = await this.accountGateway.getById(input.driverId as string)
     if (account && !account.isDriver) {
       throw new Error('Only drivers can accept a ride')
     }

@@ -25,12 +25,28 @@ export default class Ride {
     this.status = RideStatusFactory.create(status, this)
   }
 
-  static create(passengerId: string, fromLat: number, fromLong: number, toLat: number, toLong: number): Ride {
+  static create(
+    passengerId: string,
+    fromLat: number,
+    fromLong: number,
+    toLat: number,
+    toLong: number,
+  ): Ride {
     const rideId = crypto.randomUUID()
     const driverId = ''
     const status = 'requested'
     const date = new Date()
-    return new Ride(rideId, passengerId, driverId, status, date, fromLat, fromLong, toLat, toLong)
+    return new Ride(
+      rideId,
+      passengerId,
+      driverId,
+      status,
+      date,
+      fromLat,
+      fromLong,
+      toLat,
+      toLong,
+    )
   }
 
   accept(driverId: string): void {
@@ -50,7 +66,10 @@ export default class Ride {
 
   updatePosition(position: Position): void {
     if (this.lastPosition) {
-      this.distance += DistanceCalculator.calculate(this.lastPosition, position.coordinate)
+      this.distance += DistanceCalculator.calculate(
+        this.lastPosition,
+        position.coordinate,
+      )
     }
     this.lastPosition = position.coordinate
   }

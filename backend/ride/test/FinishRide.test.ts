@@ -1,17 +1,16 @@
+import type AccountGateway from '../src/application/gateway/AccountGateway'
 import AcceptRide from '../src/application/usecase/AcceptRide'
 import FinishRide from '../src/application/usecase/FinishRide'
 import GetRide from '../src/application/usecase/GetRide'
 import RequestRide from '../src/application/usecase/RequestRide'
-import SignUp from '../src/application/usecase/SignUp'
 import StartRide from '../src/application/usecase/StartRide'
 import UpdatePosition from '../src/application/usecase/UpdatePosition'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
+import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
-import AccountRepositoryDatabase from '../src/infra/repository/AccountRepositoryDatabase'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
-let signup: SignUp
 let requestRide: RequestRide
 let getRide: GetRide
 let acceptRide: AcceptRide
@@ -19,17 +18,17 @@ let startRide: StartRide
 let databaseConnection: PgPromiseAdapter
 let updatePosition: UpdatePosition
 let finishRide: FinishRide
+let accountGateway: AccountGateway
 
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter()
-  const accountRepository = new AccountRepositoryDatabase(databaseConnection)
   const rideRepository = new RideRepositoryDatabase(databaseConnection)
   const positionRepository = new PositionRepositoryDatabase(databaseConnection)
   const logger = new LoggerConsole()
-  signup = new SignUp(accountRepository, logger)
-  requestRide = new RequestRide(rideRepository, accountRepository, logger)
+  accountGateway = new AccountGatewayHttp()
+  requestRide = new RequestRide(rideRepository, accountGateway, logger)
   getRide = new GetRide(rideRepository, logger)
-  acceptRide = new AcceptRide(rideRepository, accountRepository)
+  acceptRide = new AcceptRide(rideRepository, accountGateway)
   startRide = new StartRide(rideRepository)
   updatePosition = new UpdatePosition(rideRepository, positionRepository)
   finishRide = new FinishRide(rideRepository)
@@ -43,7 +42,8 @@ test('Deve mudar a posição uma corrida', async function () {
     isPassenger: true,
     password: '123456',
   }
-  const outputSignupPassenger = await signup.execute(inputSignupPassenger)
+  const outputSignupPassenger =
+    await accountGateway.signup(inputSignupPassenger)
   const inputRequestRide = {
     passengerId: outputSignupPassenger.accountId,
     fromLat: -27.584905257808835,
@@ -60,7 +60,7 @@ test('Deve mudar a posição uma corrida', async function () {
     isDriver: true,
     password: '123456',
   }
-  const outputSignupDriver = await signup.execute(inputSignupDriver)
+  const outputSignupDriver = await accountGateway.signup(inputSignupDriver)
   const inputAcceptRide = {
     rideId: outputRequestRide.rideId,
     driverId: outputSignupDriver.accountId,

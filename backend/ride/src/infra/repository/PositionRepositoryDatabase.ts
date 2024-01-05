@@ -8,7 +8,13 @@ export default class PositionRepositoryDatabase implements PositionRepository {
   async save(position: Position): Promise<void> {
     await this.connection.query(
       'insert into cccat14.position (position_id, ride_id, lat, long, date) values ($1, $2, $3, $4, $5)',
-      [position.positionId, position.rideId, position.coordinate.lat, position.coordinate.long, position.date],
+      [
+        position.positionId,
+        position.rideId,
+        position.coordinate.lat,
+        position.coordinate.long,
+        position.date,
+      ],
     )
   }
 
