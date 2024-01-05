@@ -1,6 +1,6 @@
-import type Logger from '../logger/Logger'
-import Account from '../../domain/Account'
 import type AccountRepository from '../../application/repository/AccountRepository'
+import Account from '../../domain/Account'
+import type Logger from '../logger/Logger'
 
 export default class SignUp {
   constructor(

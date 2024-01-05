@@ -5,10 +5,8 @@ import RequestRide from '../src/application/usecase/RequestRide'
 import SignUp from '../src/application/usecase/SignUp'
 import StartRide from '../src/application/usecase/StartRide'
 import UpdatePosition from '../src/application/usecase/UpdatePosition'
-import SendReceipt from '../src/domain/SendReceipt'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
-import Mediator from '../src/infra/mediator/Mediator'
 import AccountRepositoryDatabase from '../src/infra/repository/AccountRepositoryDatabase'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
@@ -34,9 +32,7 @@ beforeEach(() => {
   acceptRide = new AcceptRide(rideRepository, accountRepository)
   startRide = new StartRide(rideRepository)
   updatePosition = new UpdatePosition(rideRepository, positionRepository)
-  const mediator = new Mediator()
-  mediator.register('rideCompleted', new SendReceipt())
-  finishRide = new FinishRide(rideRepository, mediator)
+  finishRide = new FinishRide(rideRepository)
 })
 
 test('Deve mudar a posição uma corrida', async function () {
