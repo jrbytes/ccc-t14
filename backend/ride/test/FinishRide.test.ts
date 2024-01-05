@@ -1,4 +1,5 @@
 import type AccountGateway from '../src/application/gateway/AccountGateway'
+import type PaymentGateway from '../src/application/gateway/PaymentGateway'
 import AcceptRide from '../src/application/usecase/AcceptRide'
 import FinishRide from '../src/application/usecase/FinishRide'
 import GetRide from '../src/application/usecase/GetRide'
@@ -7,6 +8,7 @@ import StartRide from '../src/application/usecase/StartRide'
 import UpdatePosition from '../src/application/usecase/UpdatePosition'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
+import PaymentGatewayHttp from '../src/infra/gateway/PaymentGatewayHttp'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
@@ -19,6 +21,7 @@ let databaseConnection: PgPromiseAdapter
 let updatePosition: UpdatePosition
 let finishRide: FinishRide
 let accountGateway: AccountGateway
+let paymentGateway: PaymentGateway
 
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter()
@@ -31,7 +34,8 @@ beforeEach(() => {
   acceptRide = new AcceptRide(rideRepository, accountGateway)
   startRide = new StartRide(rideRepository)
   updatePosition = new UpdatePosition(rideRepository, positionRepository)
-  finishRide = new FinishRide(rideRepository)
+  paymentGateway = new PaymentGatewayHttp()
+  finishRide = new FinishRide(rideRepository, paymentGateway)
 })
 
 test('Deve mudar a posição uma corrida', async function () {

@@ -1,7 +1,11 @@
 import type RideRepository from '../../application/repository/RideRepository'
+import type PaymentGateway from '../gateway/PaymentGateway'
 
 export default class FinishRide {
-  constructor(private readonly rideRepository: RideRepository) {}
+  constructor(
+    private readonly rideRepository: RideRepository,
+    private readonly paymentGateway: PaymentGateway,
+  ) {}
 
   async execute(input: Input): Promise<void> {
     const ride = await this.rideRepository.getById(input.rideId)
@@ -11,6 +15,10 @@ export default class FinishRide {
     }
     ride.finish()
     await this.rideRepository.update(ride)
+    await this.paymentGateway.processPayment({
+      rideId: ride.rideId,
+      amount: ride.getFare(),
+    })
   }
 }
 
