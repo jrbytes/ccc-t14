@@ -4,7 +4,7 @@ module.exports = {
     "es2021": true
   },
   "extends": ["standard-with-typescript", "prettier"],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "eslint-plugin-import-helpers"],
   "overrides": [
     {
       "env": {
@@ -28,5 +28,13 @@ module.exports = {
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "no-new": "off",
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": ["module", "/^@/", ["parent", "sibling", "index"]],
+        "alphabetize": { "order": "asc", "ignoreCase": true }
+      }
+    ]
   }
 }
