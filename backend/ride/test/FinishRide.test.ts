@@ -11,7 +11,7 @@ import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import PaymentGatewayHttp from '../src/infra/gateway/PaymentGatewayHttp'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
-import Queue from '../src/infra/queue/Queue'
+import type Queue from '../src/infra/queue/Queue'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
@@ -37,7 +37,10 @@ beforeEach(() => {
   startRide = new StartRide(rideRepository)
   updatePosition = new UpdatePosition(rideRepository, positionRepository)
   paymentGateway = new PaymentGatewayHttp()
-  const queue = new Queue()
+  const queue: Queue = {
+    async publish(queue: string, data: any): Promise<void> {},
+    async consume(queue: string, callback: any): Promise<void> {},
+  }
   finishRide = new FinishRide(rideRepository, paymentGateway, queue)
 })
 
