@@ -21,3 +21,7 @@ Mocks: Objetos similares a stubs e spies, permite que voce diga exatamente o que
 quer que ele faça e o teste vai quebrar se isso não ocorrer.  
 Fakes: Objetos que implementam uma versão simplificada de um componente real, porém
 mais leve e mais rápida.
+
+
+# RabbitMQ
+http://localhost:15672/
