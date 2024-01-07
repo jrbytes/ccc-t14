@@ -25,3 +25,8 @@ mais leve e mais rápida.
 
 # RabbitMQ
 http://localhost:15672/
+
+
+# Livros
+
+1. Padrões de arquitetura corporativa Martin Fowler 
