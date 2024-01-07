@@ -1,5 +1,5 @@
 export default class SendReceipt {
-  execute(input: any): void {
+  async execute(input: any): Promise<void> {
     console.log('sendReceipt')
   }
 }

@@ -11,6 +11,7 @@ import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import PaymentGatewayHttp from '../src/infra/gateway/PaymentGatewayHttp'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
+import Queue from '../src/infra/queue/Queue'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
@@ -36,7 +37,8 @@ beforeEach(() => {
   startRide = new StartRide(rideRepository)
   updatePosition = new UpdatePosition(rideRepository, positionRepository)
   paymentGateway = new PaymentGatewayHttp()
-  finishRide = new FinishRide(rideRepository, paymentGateway)
+  const queue = new Queue()
+  finishRide = new FinishRide(rideRepository, paymentGateway, queue)
 })
 
 test('Deve mudar a posição uma corrida', async function () {

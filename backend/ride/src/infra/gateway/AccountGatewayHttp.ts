@@ -4,7 +4,7 @@ import type AccountGateway from '../../application/gateway/AccountGateway'
 
 export default class AccountGatewayHttp implements AccountGateway {
   async signup(input: any): Promise<any> {
-    const { data } = await axios.post('http://localhost:3001/signup', input)
+    const { data } = await axios.post('http://localhost:3004/signup', input)
     return data
   }
 

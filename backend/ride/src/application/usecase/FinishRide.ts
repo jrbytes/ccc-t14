@@ -1,10 +1,12 @@
 import type RideRepository from '../../application/repository/RideRepository'
+import type Queue from '../../infra/queue/Queue'
 import type PaymentGateway from '../gateway/PaymentGateway'
 
 export default class FinishRide {
   constructor(
     private readonly rideRepository: RideRepository,
     private readonly paymentGateway: PaymentGateway,
+    private readonly queue: Queue,
   ) {}
 
   async execute(input: Input): Promise<void> {
@@ -15,7 +17,11 @@ export default class FinishRide {
     }
     ride.finish()
     await this.rideRepository.update(ride)
-    await this.paymentGateway.processPayment({
+    // await this.paymentGateway.processPayment({
+    //   rideId: ride.rideId,
+    //   amount: ride.getFare(),
+    // })
+    await this.queue.publish('rideCompleted', {
       rideId: ride.rideId,
       amount: ride.getFare(),
     })
