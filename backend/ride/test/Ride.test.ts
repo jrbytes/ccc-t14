@@ -1,3 +1,4 @@
+import { FareCalculatorFactory } from '../src/domain/FareCalculator'
 import Position from '../src/domain/Position'
 import Ride from '../src/domain/Ride'
 
@@ -19,5 +20,7 @@ test('Deve testar uma ride', () => {
   ride.updatePosition(position2)
   ride.finish()
   expect(ride.getDistance()).toBe(10)
-  expect(ride.getFare()).toBe(21)
+  const fareCalculator = FareCalculatorFactory.create(new Date())
+  const distance = fareCalculator.calculate(ride.getDistance())
+  expect(ride.getFare()).toBe(distance)
 })

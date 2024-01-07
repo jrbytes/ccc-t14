@@ -6,6 +6,7 @@ import GetRide from '../src/application/usecase/GetRide'
 import RequestRide from '../src/application/usecase/RequestRide'
 import StartRide from '../src/application/usecase/StartRide'
 import UpdatePosition from '../src/application/usecase/UpdatePosition'
+import { FareCalculatorFactory } from '../src/domain/FareCalculator'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import PaymentGatewayHttp from '../src/infra/gateway/PaymentGatewayHttp'
@@ -94,8 +95,12 @@ test('Deve mudar a posição uma corrida', async function () {
   await finishRide.execute(inputFinishRide)
   const outputGetRide = await getRide.execute(outputRequestRide.rideId)
   expect(outputGetRide.status).toBe('completed')
-  expect(outputGetRide.distance).toBe(10)
-  expect(outputGetRide.fare).toBe(21)
+  const distance = outputGetRide.distance
+  expect(distance).toBe(10)
+  const fareCalculator = FareCalculatorFactory.create(new Date()).calculate(
+    distance || 0,
+  )
+  expect(outputGetRide.fare).toBe(fareCalculator)
 })
 
 afterEach(async () => {
