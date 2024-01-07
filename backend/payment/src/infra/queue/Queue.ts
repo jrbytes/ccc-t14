@@ -18,7 +18,6 @@ export default class Queue {
       async (message: amqp.ConsumeMessage | null) => {
         if (!message) return
         const input = JSON.parse(message?.content.toString())
-        console.log(input) // TODO: remove after
         await callback(input)
         channel.ack(message)
       },

@@ -19,7 +19,6 @@ export default class Queue {
         if (!message) return
         const input = JSON.parse(message?.content.toString())
         try {
-          console.log(input) // TODO: remove after
           await callback(input)
           channel.ack(message)
         } catch (error) {

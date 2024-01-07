@@ -1,8 +1,9 @@
 import type AccountGateway from '../src/application/gateway/AccountGateway'
 import type PaymentGateway from '../src/application/gateway/PaymentGateway'
+import GetRideQuery from '../src/application/query/GetRideQuery'
 import AcceptRide from '../src/application/usecase/AcceptRide'
 import FinishRide from '../src/application/usecase/FinishRide'
-import GetRide from '../src/application/usecase/GetRide'
+// import GetRideApiComposition from '../src/application/usecase/GetRideAPIComposition'
 import RequestRide from '../src/application/usecase/RequestRide'
 import StartRide from '../src/application/usecase/StartRide'
 import UpdatePosition from '../src/application/usecase/UpdatePosition'
@@ -11,12 +12,12 @@ import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import PaymentGatewayHttp from '../src/infra/gateway/PaymentGatewayHttp'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
-import Queue from '../src/infra/queue/Queue'
+import type Queue from '../src/infra/queue/Queue'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
 let requestRide: RequestRide
-let getRide: GetRide
+let getRide: GetRideQuery
 let acceptRide: AcceptRide
 let startRide: StartRide
 let databaseConnection: PgPromiseAdapter
@@ -32,16 +33,17 @@ beforeEach(() => {
   const logger = new LoggerConsole()
   accountGateway = new AccountGatewayHttp()
   requestRide = new RequestRide(rideRepository, accountGateway, logger)
-  getRide = new GetRide(rideRepository, logger)
+  getRide = new GetRideQuery(databaseConnection)
+  // getRide = new GetRideApiComposition(rideRepository, accountGateway, logger)
   acceptRide = new AcceptRide(rideRepository, accountGateway)
   startRide = new StartRide(rideRepository)
   updatePosition = new UpdatePosition(rideRepository, positionRepository)
   paymentGateway = new PaymentGatewayHttp()
-  // const queue: Queue = {
-  //   async publish(queue: string, data: any): Promise<void> {},
-  //   async consume(queue: string, callback: any): Promise<void> {},
-  // }
-  const queue = new Queue()
+  const queue: Queue = {
+    async publish(queue: string, data: any): Promise<void> {},
+    async consume(queue: string, callback: any): Promise<void> {},
+  }
+  // const queue = new Queue()
   finishRide = new FinishRide(rideRepository, paymentGateway, queue)
 })
 
@@ -107,6 +109,9 @@ test('Deve mudar a posição uma corrida', async function () {
     distance || 0,
   )
   expect(outputGetRide.fare).toBe(fareCalculator)
+  expect(outputGetRide.passengerName).toBe('John Doe')
+  expect(outputGetRide.passengerCpf).toBe('97456321558')
+  expect(outputGetRide.driverCarPlate).toBe('AAA9999')
 })
 
 afterEach(async () => {
