@@ -5,6 +5,7 @@ import MainController from './infra/controller/MainController'
 import PgPromiseAdapter from './infra/database/PgPromiseAdapter'
 import Registry from './infra/di/Registry'
 import AccountGatewayHttp from './infra/gateway/AccountGatewayHttp'
+import AxiosAdapter from './infra/http/AxiosAdapter'
 import ExpressAdapter from './infra/http/ExpressAdapter'
 import LoggerConsole from './infra/logger/LoggerConsole'
 import Queue from './infra/queue/Queue'
@@ -16,7 +17,7 @@ const queue = new Queue()
 const sendReceipt = new SendReceipt()
 const databaseConnection = new PgPromiseAdapter()
 const rideRepository = new RideRepositoryDatabase(databaseConnection)
-const accountGateway = new AccountGatewayHttp()
+const accountGateway = new AccountGatewayHttp(new AxiosAdapter())
 const logger = new LoggerConsole()
 const requestRide = new RequestRide(rideRepository, accountGateway, logger)
 const updateRideProjection = new UpdateRideProjectionAPIComposition(

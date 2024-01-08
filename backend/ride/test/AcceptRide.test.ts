@@ -4,6 +4,7 @@ import GetRide from '../src/application/usecase/GetRide'
 import RequestRide from '../src/application/usecase/RequestRide'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
+import AxiosAdapter from '../src/infra/http/AxiosAdapter'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
@@ -17,7 +18,7 @@ beforeEach(() => {
   databaseConnection = new PgPromiseAdapter()
   const rideRepository = new RideRepositoryDatabase(databaseConnection)
   const logger = new LoggerConsole()
-  accountGateway = new AccountGatewayHttp()
+  accountGateway = new AccountGatewayHttp(new AxiosAdapter())
   requestRide = new RequestRide(rideRepository, accountGateway, logger)
   getRide = new GetRide(rideRepository, logger)
   acceptRide = new AcceptRide(rideRepository, accountGateway)

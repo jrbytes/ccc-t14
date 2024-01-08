@@ -11,6 +11,7 @@ import { FareCalculatorFactory } from '../src/domain/FareCalculator'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
 import PaymentGatewayHttp from '../src/infra/gateway/PaymentGatewayHttp'
+import AxiosAdapter from '../src/infra/http/AxiosAdapter'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
 import Queue from '../src/infra/queue/Queue'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
@@ -31,7 +32,7 @@ beforeEach(() => {
   const rideRepository = new RideRepositoryDatabase(databaseConnection)
   const positionRepository = new PositionRepositoryDatabase(databaseConnection)
   const logger = new LoggerConsole()
-  accountGateway = new AccountGatewayHttp()
+  accountGateway = new AccountGatewayHttp(new AxiosAdapter())
   requestRide = new RequestRide(rideRepository, accountGateway, logger)
   getRide = new GetRideQuery(databaseConnection)
   // getRide = new GetRideApiComposition(rideRepository, accountGateway, logger)

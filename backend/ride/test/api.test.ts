@@ -3,6 +3,7 @@ import axios from 'axios'
 import GetRideByPassengerId from '../src/application/usecase/GetRideByPassengerId'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
+import AxiosAdapter from '../src/infra/http/AxiosAdapter'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
 
 async function sleep(time: number): Promise<number> {
@@ -19,7 +20,7 @@ let getRideByPassengerId: GetRideByPassengerId
 
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter()
-  accountGateway = new AccountGatewayHttp()
+  accountGateway = new AccountGatewayHttp(new AxiosAdapter())
   const rideRepository = new RideRepositoryDatabase(databaseConnection)
   getRideByPassengerId = new GetRideByPassengerId(rideRepository)
 })

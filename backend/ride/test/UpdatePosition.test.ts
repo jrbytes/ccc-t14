@@ -6,6 +6,7 @@ import StartRide from '../src/application/usecase/StartRide'
 import UpdatePosition from '../src/application/usecase/UpdatePosition'
 import PgPromiseAdapter from '../src/infra/database/PgPromiseAdapter'
 import AccountGatewayHttp from '../src/infra/gateway/AccountGatewayHttp'
+import AxiosAdapter from '../src/infra/http/AxiosAdapter'
 import LoggerConsole from '../src/infra/logger/LoggerConsole'
 import PositionRepositoryDatabase from '../src/infra/repository/PositionRepositoryDatabase'
 import RideRepositoryDatabase from '../src/infra/repository/RideRepositoryDatabase'
@@ -23,7 +24,7 @@ beforeEach(() => {
   const rideRepository = new RideRepositoryDatabase(databaseConnection)
   const positionRepository = new PositionRepositoryDatabase(databaseConnection)
   const logger = new LoggerConsole()
-  accountGateway = new AccountGatewayHttp()
+  accountGateway = new AccountGatewayHttp(new AxiosAdapter())
   requestRide = new RequestRide(rideRepository, accountGateway, logger)
   getRide = new GetRide(rideRepository, logger)
   acceptRide = new AcceptRide(rideRepository, accountGateway)
