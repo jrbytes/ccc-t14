@@ -9,9 +9,9 @@ export default class GetRideApiComposition {
     private readonly logger: Logger,
   ) {}
 
-  async execute(rideId: any): Promise<Output> {
+  async execute(rideId: string): Promise<Output> {
     this.logger.log('getRideApiComposition')
-    const ride = await this.rideRepository.getById(rideId as string)
+    const ride = await this.rideRepository.getById(rideId)
     if (!ride) throw new Error('Ride not found')
     const passenger = await this.accountGateway.getById(ride.passengerId)
     let driver

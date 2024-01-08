@@ -13,15 +13,11 @@ export default class GetRideQuery {
         r.status,
         r.passenger_id,
         r.driver_id,
-        ap.name AS passenger_name,
-        ap.cpf AS passenger_cpf,
-        ad.car_plate AS driver_car_plate
+        r.name AS passenger_name,
+        r.cpf AS passenger_cpf,
+        r.car_plate AS driver_car_plate
       FROM
-        cccat14.ride r
-      JOIN
-        cccat14.account ap on ap.account_id = r.passenger_id
-      LEFT JOIN
-        cccat14.account ad on ad.account_id = r.driver_id
+        cccat14.ride_projection r
       WHERE
         r.ride_id = $1;
       `,

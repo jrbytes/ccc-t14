@@ -1,4 +1,5 @@
 import RequestRide from './application/usecase/RequestRide'
+import UpdateRideProjectionAPIComposition from './application/usecase/UpdateRideProjectionAPIComposition'
 import SendReceipt from './domain/SendReceipt'
 import MainController from './infra/controller/MainController'
 import PgPromiseAdapter from './infra/database/PgPromiseAdapter'
@@ -18,12 +19,17 @@ const rideRepository = new RideRepositoryDatabase(databaseConnection)
 const accountGateway = new AccountGatewayHttp()
 const logger = new LoggerConsole()
 const requestRide = new RequestRide(rideRepository, accountGateway, logger)
+const updateRideProjection = new UpdateRideProjectionAPIComposition(
+  databaseConnection,
+  accountGateway,
+)
 
 const registry = Registry.getInstance()
 registry.register('httpServer', httpServer)
 registry.register('queue', queue)
 registry.register('sendReceipt', sendReceipt)
 registry.register('requestRide', requestRide)
+registry.register('updateRideProjection', updateRideProjection)
 
 new MainController()
 new QueueController()
