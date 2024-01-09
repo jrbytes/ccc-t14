@@ -1,6 +1,5 @@
 import sinon from 'sinon'
 
-import type Logger from '../src/application/logger/Logger'
 import type AccountRepository from '../src/application/repository/AccountRepository'
 import GetAccount from '../src/application/usecase/GetAccount'
 import SignUp from '../src/application/usecase/SignUp'
@@ -16,8 +15,7 @@ let databaseConnection: PgPromiseAdapter
 beforeEach(() => {
   databaseConnection = new PgPromiseAdapter()
   const accountRepository = new AccountRepositoryDatabase(databaseConnection)
-  const logger = new LoggerConsole()
-  signup = new SignUp(accountRepository, logger)
+  signup = new SignUp(accountRepository)
   getAccount = new GetAccount(accountRepository)
 })
 
@@ -201,10 +199,7 @@ test('Deve criar uma conta para o passageiro com fake', async function () {
       return accounts.find((account: any) => account.email === accountId)
     },
   }
-  const logger: Logger = {
-    log(message: string): void {},
-  }
-  const signup = new SignUp(accountRepository, logger)
+  const signup = new SignUp(accountRepository)
   const getAccount = new GetAccount(accountRepository)
   const outputSignup = await signup.execute(inputSignup)
   expect(outputSignup.accountId).toBeDefined()
